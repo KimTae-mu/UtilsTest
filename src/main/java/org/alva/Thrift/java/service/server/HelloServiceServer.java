@@ -28,10 +28,11 @@ public class HelloServiceServer {
             TProcessor processor = new Hello.Processor<>(new HelloServiceImpl());
             TThreadPoolServer.Args args1 = new TThreadPoolServer.Args(serverSocket);
             args1.processor(processor);
+            args1.protocolFactory(proFactory);
             TServer server = new TThreadPoolServer(args1);
             System.out.println("Start server on port 7911");
             server.serve();
-        }catch (TTransportException e){
+        } catch (TTransportException e) {
             e.printStackTrace();
         }
     }
