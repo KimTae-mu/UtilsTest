@@ -1,0 +1,52 @@
+package org.alva.ConcurrentBeauty.Chapter02;
+
+import java.util.concurrent.atomic.AtomicLong;
+
+/**
+ * <一句话描述>,
+ * <详细介绍>,
+ *
+ * @author 穆国超
+ * @since 设计wiki | 需求wiki
+ */
+public class Atomic {
+
+    //创建Long型原子计数器
+    private static AtomicLong atomicLong = new AtomicLong();
+
+    //创建数据源
+    private static Integer[] arrayOne = new Integer[]{0, 1, 2, 3, 0, 4, 5, 6, 0, 56, 0};
+    private static Integer[] arrayTwo = new Integer[]{10, 1, 2, 3, 0, 5, 6, 0, 56, 0};
+
+    public static void main(String[] args) throws InterruptedException {
+        //线程One统计数组arrayOne中0的个数
+        Thread threadOne = new Thread(() -> {
+            int size = arrayOne.length;
+
+            for (int i = 0; i < size; i++) {
+                if (arrayOne[i].intValue() == 0) {
+                    atomicLong.incrementAndGet();
+                }
+            }
+        });
+
+        Thread threadTwo = new Thread(() -> {
+            int size = arrayTwo.length;
+
+            for (int i = 0; i < size; i++) {
+                if (arrayTwo[i].intValue() == 0) {
+                    atomicLong.incrementAndGet();
+                }
+            }
+        });
+
+        threadOne.start();
+        threadTwo.start();
+
+        threadOne.join();
+        threadTwo.join();
+
+        System.out.println("count 0:" + atomicLong.get());
+    }
+
+}
